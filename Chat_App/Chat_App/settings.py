@@ -1,26 +1,18 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATE_DIR = Path.joinpath(BASE_DIR,'templates')
+TEMPLATE_DIR = BASE_DIR / 'templates'
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'vyqn!e4)=uloe$rh5ga#u!#x*vh@41ng_=6r$nu$-t1)v@#1ie'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'vyqn!e4)=uloe$rh5ga#u!#x*vh@41ng_=6r$nu$-t1)v@#1ie')
 
-from pathlib import Path
-from django.contrib.messages import constants as messages
-
-MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',  # Custom class for debug messages
-    messages.INFO: 'alert-info',    # Bootstrap info color
-    messages.SUCCESS: 'alert-success',  # Bootstrap success color
-    messages.WARNING: 'alert-warning',  # Bootstrap warning color
-    messages.ERROR: 'alert-danger',  # Bootstrap danger color
-}
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -76,17 +68,10 @@ CHANNEL_LAYERS = {
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Chatdb',  # Replace with your details
-        'USER': 'root',               # Replace with your PythonAnywhere username
-        'PASSWORD': '11449231',  # Replace with your MySQL password
-        'HOST': 'localhost',  # Default host for PythonAnywhere MySQL
-        'PORT': '3306',  # Default MySQL port
-    }
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 }
 
-# Password validationexit
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -109,10 +94,9 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static')
-# ]
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -122,3 +106,14 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN = 'login'
 LOGOUT = 'logout'
 LOGIN_URL = 'login'
+
+# Message tags for Bootstrap
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',  # Custom class for debug messages
+    messages.INFO: 'alert-info',    # Bootstrap info color
+    messages.SUCCESS: 'alert-success',  # Bootstrap success color
+    messages.WARNING: 'alert-warning',  # Bootstrap warning color
+    messages.ERROR: 'alert-danger',  # Bootstrap danger color
+}
