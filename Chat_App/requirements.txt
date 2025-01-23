@@ -11,4 +11,4 @@ PyJWT==2.8.0
 cryptography==41.0.2
 pymongo==4.4.1
 whitenoise==6.5.0
-mysqlclient
+PyMySQL
